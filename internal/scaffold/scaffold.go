@@ -26,7 +26,7 @@ type FileGeneratorService interface {
 	GenerateFile(out io.Out, path string, args types.KeyValueArgs) error
 }
 
-// TODO @Adi: Refactor so that 'manifestService' and 'defaultCRService' to use the FileGeneratorService interface and `ReuseFileGeneratorService` implementation
+// TODO: @Adi: Refactor so that 'manifestService' and 'defaultCRService' to use the FileGeneratorService interface and `ReuseFileGeneratorService` implementation
 // 'securityConfigService' provides an overall exmaple
 // please collect all questions you got while working on this task
 // please create a separate branch and open a PR targetting the current branch
@@ -75,11 +75,20 @@ func (s *ScaffoldService) CreateScaffold(opts Options) error {
 		return err
 	}
 
-	// TODO @Adi: We use 'path.Join(opts.Directory, ...)' to create the file paths at various places here
+	// TODO: @Adi: We use 'path.Join(opts.Directory, ...)' to create the file paths at various places here
 	// it should work regardless the user provides a relative or absolute path
 	// as of now, I think it only works with absolute paths for 'opts.Directory'
 	// please verify if this observation is true and if so, please fix it
 	// do some research on how to handle file paths in Go properly and update the code accordingly
+
+	// DONE: `path.Join(opts.Directory, ...)` actually works for both the cases, i.e., absolute and relative
+	// paths. The files were always created in the desired directory. Tested it with the following cases:
+	//	1. shorthand -d
+	//  2. full flag --directory
+	//	3. $(pwd)/{folder_name} -> tried replacing `folder_name` with "", "LICENSES", "docs" and it worked each time
+	//	4. hard coded the absolute path; works
+	// 	5. hard coded relative path -> ".", "./", "../modulectl", "../../Desktop/modulectl"; works
+	//	So, nothing changed in this case :D
 	manifestFilePath := path.Join(opts.Directory, opts.ManifestFileName)
 	if err := s.manifestService.GenerateManifestFile(opts.Out, manifestFilePath); err != nil {
 		return err
