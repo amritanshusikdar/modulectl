@@ -14,14 +14,6 @@ type ModuleConfigService interface {
 	PreventOverwrite(directory, moduleConfigFileName string, overwrite bool) error
 }
 
-type ManifestService interface {
-	GenerateManifestFile(out io.Out, path string) error
-}
-
-type DefaultCRService interface {
-	GenerateDefaultCRFile(out io.Out, path string) error
-}
-
 type FileGeneratorService interface {
 	GenerateFile(out io.Out, path string, args types.KeyValueArgs) error
 }
@@ -47,6 +39,7 @@ type FileGeneratorService interface {
 //     again, see security config as an example
 //   - remove the 'ManifestService' and 'DefaultCRService' interfaces from this file
 //   - remove the 'ManifestService' and 'DefaultCRService' implementations from internal/scaffold/manifest/manifest.go and internal/scaffold/defaultcr/defaultcr.go
+
 type ScaffoldService struct {
 	moduleConfigService   ModuleConfigService
 	manifestService       FileGeneratorService
@@ -80,15 +73,6 @@ func (s *ScaffoldService) CreateScaffold(opts Options) error {
 	// as of now, I think it only works with absolute paths for 'opts.Directory'
 	// please verify if this observation is true and if so, please fix it
 	// do some research on how to handle file paths in Go properly and update the code accordingly
-
-	// DONE: `path.Join(opts.Directory, ...)` actually works for both the cases, i.e., absolute and relative
-	// paths. The files were always created in the desired directory. Tested it with the following cases:
-	//	1. shorthand -d
-	//  2. full flag --directory
-	//	3. $(pwd)/{folder_name} -> tried replacing `folder_name` with "", "LICENSES", "docs" and it worked each time
-	//	4. hard coded the absolute path; works
-	// 	5. hard coded relative path -> ".", "./", "../modulectl", "../../Desktop/modulectl"; works
-	//	So, nothing changed in this case :D
 	manifestFilePath := path.Join(opts.Directory, opts.ManifestFileName)
 	if err := s.manifestService.GenerateFile(opts.Out, manifestFilePath, nil); err != nil {
 		return fmt.Errorf("%w %s: %w", ErrGeneratingFile, opts.ManifestFileName, err)
