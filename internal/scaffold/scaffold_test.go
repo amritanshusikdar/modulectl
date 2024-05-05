@@ -206,7 +206,7 @@ func Test_RunScaffold_ReturnsError_WhenGeneratingSecurityConfigFileFails(t *test
 
 	result := svc.CreateScaffold(newScaffoldOptionsBuilder().build())
 
-	require.ErrorIs(t, result, scaffold.ErrGenertingFile)
+	require.ErrorIs(t, result, scaffold.ErrGeneratingFile)
 	require.ErrorIs(t, result, errSomeFileGeneratorError)
 	assert.Contains(t, result.Error(), "security-config.yaml")
 }
@@ -232,7 +232,7 @@ func Test_RunScaffold_ReturnsError_WhenGeneratingModuleConfigReturnsError(t *tes
 
 	result := svc.CreateScaffold(newScaffoldOptionsBuilder().build())
 
-	require.ErrorIs(t, result, scaffold.ErrGenertingFile)
+	require.ErrorIs(t, result, scaffold.ErrGeneratingFile)
 	require.ErrorIs(t, result, errSomeFileGeneratorError)
 	assert.Contains(t, result.Error(), "module-config.yaml")
 }

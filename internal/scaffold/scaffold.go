@@ -91,14 +91,14 @@ func (s *ScaffoldService) CreateScaffold(opts Options) error {
 	//	So, nothing changed in this case :D
 	manifestFilePath := path.Join(opts.Directory, opts.ManifestFileName)
 	if err := s.manifestService.GenerateFile(opts.Out, manifestFilePath, nil); err != nil {
-		return fmt.Errorf("%w %s: %w", ErrGenertingFile, opts.ManifestFileName, err)
+		return fmt.Errorf("%w %s: %w", ErrGeneratingFile, opts.ManifestFileName, err)
 	}
 
 	defaultCRFilePath := ""
 	if opts.defaultCRFileNameConfigured() {
 		defaultCRFilePath = path.Join(opts.Directory, opts.DefaultCRFileName)
 		if err := s.defaultCRService.GenerateFile(opts.Out, defaultCRFilePath, nil); err != nil {
-			return fmt.Errorf("%w %s: %w", ErrGenertingFile, opts.DefaultCRFileName, err)
+			return fmt.Errorf("%w %s: %w", ErrGeneratingFile, opts.DefaultCRFileName, err)
 		}
 	}
 
@@ -109,7 +109,7 @@ func (s *ScaffoldService) CreateScaffold(opts Options) error {
 			opts.Out,
 			securityConfigFilePath,
 			types.KeyValueArgs{contentprovider.ArgModuleName: opts.ModuleName}); err != nil {
-			return fmt.Errorf("%w %s: %w", ErrGenertingFile, opts.SecurityConfigFileName, err)
+			return fmt.Errorf("%w %s: %w", ErrGeneratingFile, opts.SecurityConfigFileName, err)
 		}
 	}
 
@@ -125,7 +125,7 @@ func (s *ScaffoldService) CreateScaffold(opts Options) error {
 			contentprovider.ArgDefaultCRFile:      defaultCRFilePath,
 			contentprovider.ArgSecurityConfigFile: securityConfigFilePath,
 		}); err != nil {
-		return fmt.Errorf("%w %s: %w", ErrGenertingFile, opts.ModuleConfigFileName, err)
+		return fmt.Errorf("%w %s: %w", ErrGeneratingFile, opts.ModuleConfigFileName, err)
 	}
 
 	return nil
