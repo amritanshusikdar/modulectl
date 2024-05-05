@@ -90,15 +90,15 @@ func (s *ScaffoldService) CreateScaffold(opts Options) error {
 	// 	5. hard coded relative path -> ".", "./", "../modulectl", "../../Desktop/modulectl"; works
 	//	So, nothing changed in this case :D
 	manifestFilePath := path.Join(opts.Directory, opts.ManifestFileName)
-	if err := s.manifestService.GenerateManifestFile(opts.Out, manifestFilePath); err != nil {
-		return err
+	if err := s.manifestService.GenerateFile(opts.Out, manifestFilePath, nil); err != nil {
+		return fmt.Errorf("%w %s: %w", ErrGenertingFile, opts.ManifestFileName, err)
 	}
 
 	defaultCRFilePath := ""
 	if opts.defaultCRFileNameConfigured() {
 		defaultCRFilePath = path.Join(opts.Directory, opts.DefaultCRFileName)
-		if err := s.defaultCRService.GenerateDefaultCRFile(opts.Out, defaultCRFilePath); err != nil {
-			return err
+		if err := s.defaultCRService.GenerateFile(opts.Out, defaultCRFilePath, nil); err != nil {
+			return fmt.Errorf("%w %s: %w", ErrGenertingFile, opts.DefaultCRFileName, err)
 		}
 	}
 

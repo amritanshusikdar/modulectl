@@ -1,12 +1,14 @@
 package contentprovider
 
+import "github.com/kyma-project/modulectl/internal/scaffold/common/types"
+
 type DefaultCRContentProvider struct{}
 
 func NewDefaultCRContentProvider() *DefaultCRContentProvider {
 	return &DefaultCRContentProvider{}
 }
 
-func (s *DefaultCRContentProvider) GetDefaultContent() string {
+func (s *DefaultCRContentProvider) GetDefaultContent(_ types.KeyValueArgs) string {
 	return s.getDefaultContent()
 }
 
