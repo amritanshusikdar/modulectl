@@ -49,14 +49,14 @@ type FileGeneratorService interface {
 //   - remove the 'ManifestService' and 'DefaultCRService' implementations from internal/scaffold/manifest/manifest.go and internal/scaffold/defaultcr/defaultcr.go
 type ScaffoldService struct {
 	moduleConfigService   ModuleConfigService
-	manifestService       ManifestService
-	defaultCRService      DefaultCRService
+	manifestService       FileGeneratorService
+	defaultCRService      FileGeneratorService
 	securityConfigService FileGeneratorService
 }
 
 func NewScaffoldService(moduleConfigService ModuleConfigService,
-	manifestService ManifestService,
-	defaultCRService DefaultCRService,
+	manifestService FileGeneratorService,
+	defaultCRService FileGeneratorService,
 	securityConfigService FileGeneratorService) *ScaffoldService {
 	return &ScaffoldService{
 		moduleConfigService:   moduleConfigService,
