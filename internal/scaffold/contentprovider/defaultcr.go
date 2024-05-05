@@ -9,10 +9,6 @@ func NewDefaultCRContentProvider() *DefaultCRContentProvider {
 }
 
 func (s *DefaultCRContentProvider) GetDefaultContent(_ types.KeyValueArgs) string {
-	return s.getDefaultContent()
-}
-
-func (s *DefaultCRContentProvider) getDefaultContent() string {
 	return `# This is the file that contains the defaultCR for your module, which is the Custom Resource that will be created upon module enablement.
 	# Make sure this file contains *ONLY* the Custom Resource (not the Custom Resource Definition, which should be a part of your module manifest)
 
