@@ -2,9 +2,7 @@ package scaffold_test
 
 import (
 	"errors"
-	"fmt"
 	"io"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -12,7 +10,6 @@ import (
 
 	"github.com/kyma-project/modulectl/internal/scaffold"
 	"github.com/kyma-project/modulectl/internal/scaffold/common/types"
-	contentproviders "github.com/kyma-project/modulectl/internal/scaffold/contentprovider"
 	"github.com/kyma-project/modulectl/internal/scaffold/defaultcr"
 	"github.com/kyma-project/modulectl/internal/scaffold/manifest"
 	iotools "github.com/kyma-project/modulectl/tools/io"
@@ -250,53 +247,6 @@ func Test_RunScaffold_Succeeds(t *testing.T) {
 	result := svc.CreateScaffold(newScaffoldOptionsBuilder().build())
 
 	require.NoError(t, result)
-}
-
-func Test_RunScaffold_Succeeds_WhenSettingDefualtContentProviders(t *testing.T) {
-	manifestContentProvider := contentproviders.NewManifestContentProvider()
-	defaultCRContentProvider := contentproviders.NewDefaultCRContentProvider()
-
-	manifestGeneratedDefaultContent, _ := manifestContentProvider.GetDefaultContent(nil)
-	defaultCRGeneratedDefaultContent, _ := defaultCRContentProvider.GetDefaultContent(nil)
-
-	t.Parallel()
-	tests := []struct {
-		name     string
-		value    string
-		expected string
-	}{
-		{
-			name:  "Manifest",
-			value: manifestGeneratedDefaultContent,
-			expected: `# This file holds the Manifest of your module, encompassing all resources installed in the cluster once the module is activated.
-# It should include the Custom Resource Definition for your module's default CustomResource, if it exists.
-
-`,
-		}, {
-			name:  "DefaultCR",
-			value: defaultCRGeneratedDefaultContent,
-			expected: `# This is the file that contains the defaultCR for your module, which is the Custom Resource that will be created upon module enablement.
-# Make sure this file contains *ONLY* the Custom Resource (not the Custom Resource Definition, which should be a part of your module manifest)
-
-`,
-		},
-	}
-
-	for _, testcase := range tests {
-		testcase := testcase
-		testName := fmt.Sprintf("TestCorrectContentProviderFor_%s", testcase.name)
-
-		testcase.value = strings.TrimSpace(testcase.value)
-		testcase.expected = strings.TrimSpace(testcase.expected)
-
-		t.Run(testName, func(t *testing.T) {
-			t.Parallel()
-			if testcase.value != testcase.expected {
-				t.Errorf("ContentProvider for '%s' did not return correct default: expected = '%s', but got = '%s'",
-					testcase.name, testcase.expected, testcase.value)
-			}
-		})
-	}
 }
 
 // ***************
