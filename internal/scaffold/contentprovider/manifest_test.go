@@ -4,12 +4,21 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/kyma-project/modulectl/internal/scaffold/common/types"
 )
 
 func Test_ManifestContentProvider_SetsDefaultCorrectly(t *testing.T) {
 	manifestContentProvider := NewManifestContentProvider()
 
-	manifestGeneratedDefaultContent, _ := manifestContentProvider.GetDefaultContent(nil)
+	expectedDefault := `# This file holds the Manifest of your module, encompassing all resources installed in the cluster once the module is activated.
+# It should include the Custom Resource Definition for your module's default CustomResource, if it exists.
+
+`
+
+	manifestGeneratedDefaultContentWithNil, _ := manifestContentProvider.GetDefaultContent(nil)
+	manifestGeneratedDefaultContentWithEmptyMap, _ := manifestContentProvider.GetDefaultContent(make(types.KeyValueArgs))
+
 	t.Parallel()
 	tests := []struct {
 		name     string
@@ -17,12 +26,13 @@ func Test_ManifestContentProvider_SetsDefaultCorrectly(t *testing.T) {
 		expected string
 	}{
 		{
-			name:  "Manifest",
-			value: manifestGeneratedDefaultContent,
-			expected: `# This file holds the Manifest of your module, encompassing all resources installed in the cluster once the module is activated.
-# It should include the Custom Resource Definition for your module's default CustomResource, if it exists.
-
-`,
+			name:     "Manifest Default Content with Nil",
+			value:    manifestGeneratedDefaultContentWithNil,
+			expected: expectedDefault,
+		}, {
+			name:     "Manifest Default Content with Empty Map",
+			value:    manifestGeneratedDefaultContentWithEmptyMap,
+			expected: expectedDefault,
 		},
 	}
 
