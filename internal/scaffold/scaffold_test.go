@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -268,18 +269,26 @@ func Test_RunScaffold_Succeeds_WhenSettingDefualtContentProviders(t *testing.T) 
 			name:  "Manifest",
 			value: manifestGeneratedDefaultContent,
 			expected: `# This file holds the Manifest of your module, encompassing all resources installed in the cluster once the module is activated.
-			# It should include the Custom Resource Definition for your module's default CustomResource, if it exists.`,
+# It should include the Custom Resource Definition for your module's default CustomResource, if it exists.
+
+`,
 		}, {
 			name:  "DefaultCR",
 			value: defaultCRGeneratedDefaultContent,
 			expected: `# This is the file that contains the defaultCR for your module, which is the Custom Resource that will be created upon module enablement.
-			# Make sure this file contains *ONLY* the Custom Resource (not the Custom Resource Definition, which should be a part of your module manifest)`,
+# Make sure this file contains *ONLY* the Custom Resource (not the Custom Resource Definition, which should be a part of your module manifest)
+
+`,
 		},
 	}
 
 	for _, testcase := range tests {
 		testcase := testcase
 		testName := fmt.Sprintf("TestCorrectContentProviderFor_%s", testcase.name)
+
+		testcase.value = strings.TrimSpace(testcase.value)
+		testcase.expected = strings.TrimSpace(testcase.expected)
+
 		t.Run(testName, func(t *testing.T) {
 			t.Parallel()
 			if testcase.value != testcase.expected {
