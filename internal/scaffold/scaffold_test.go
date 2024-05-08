@@ -10,8 +10,6 @@ import (
 
 	"github.com/kyma-project/modulectl/internal/scaffold"
 	"github.com/kyma-project/modulectl/internal/scaffold/common/types"
-	"github.com/kyma-project/modulectl/internal/scaffold/defaultcr"
-	"github.com/kyma-project/modulectl/internal/scaffold/manifest"
 	iotools "github.com/kyma-project/modulectl/tools/io"
 )
 
@@ -134,7 +132,9 @@ func Test_RunScaffold_ReturnsError_WhenGeneratingManifestFileFails(t *testing.T)
 
 	result := svc.CreateScaffold(newScaffoldOptionsBuilder().build())
 
-	require.ErrorIs(t, result, manifest.ErrGeneratingManifestFile)
+	require.ErrorIs(t, result, scaffold.ErrGeneratingFile)
+	require.ErrorIs(t, result, errSomeFileGeneratorError)
+	assert.Contains(t, result.Error(), "manifest.yaml")
 }
 
 func Test_RunScaffold_Succeeds_WhenGeneratingManifestFile(t *testing.T) {
@@ -170,7 +170,9 @@ func Test_RunScaffold_ReturnsError_WhenGeneratingDefaultCRFileFails(t *testing.T
 
 	result := svc.CreateScaffold(newScaffoldOptionsBuilder().build())
 
-	require.ErrorIs(t, result, defaultcr.ErrGeneratingDefaultCRFile)
+	require.ErrorIs(t, result, scaffold.ErrGeneratingFile)
+	require.ErrorIs(t, result, errSomeFileGeneratorError)
+	assert.Contains(t, result.Error(), "default-cr.yaml")
 }
 
 func Test_RunScaffold_Succeeds_WhenGeneratingDefaultCRFile(t *testing.T) {
